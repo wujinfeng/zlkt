@@ -1,7 +1,7 @@
 #encoding: utf-8
 
-from flask-script import Manager
-from flask-migrate import Migrate, MigrateCommand
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 from zlkt import app
 from exts import db
 
