@@ -1,10 +1,13 @@
 from flask import Flask, url_for, request, make_response, render_template, redirect, abort
 from werkzeug.utils import secure_filename
+from models import User
+from exts import db
 
 import config
 
 app = Flask(__name__)
 app.config.from_object(config)
+db.init_app(app)
 
 
 @app.route('/')
@@ -55,7 +58,6 @@ def about():
 
 @app.route('/login/', methods=['POST', 'GET'])
 def login():
-
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -68,8 +70,6 @@ def login():
         return render_template('login.html')
 
 
-
-
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -80,13 +80,24 @@ def upload_file():
 @app.route('/regist/', methods=['GET', 'POST'])
 def regist():
     if request.method == 'POST':
+        telephone = request.form['telephone']
         username = request.form['username']
-        password = request.form['password']
-        if username == 'u' and password == 'p':
-            error = ''
+        password1 = request.form['password1']
+        password2 = request.form['password2']
+        # 手机号码验证，如果被注册了，不能再注册
+        user = User.query.filter(User.telephone == telephone).first()
+        if user:
+            return '该手机号已经被注册，请更换手机号！'
         else:
-            error = 'Invalid username/password'
-        return render_template('regist.html', error=error)
+            # password1 password2判断相等
+            if password2 != password1:
+                return '两次密码不一样，请核对后再填写！'
+            else:
+                user = User(telephone=telephone, username=username, password=password1)
+                db.session.add(user)
+                db.session.commit()
+                # 注册ok，跳转登陆页面
+                return redirect(url_for('login'))
     if request.method == 'GET':
         return render_template('regist.html')
 
@@ -100,7 +111,6 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(port=3000)
-
 
 #     username = request.cookies.get('username')
 #     print(username)
