@@ -53,7 +53,7 @@ def about():
     return redirect(url_for('login'))
 
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login/', methods=['POST', 'GET'])
 def login():
     error = None
     if request.method == 'POST':
@@ -63,10 +63,11 @@ def login():
             error = ''
         else:
             error = 'Invalid username/password'
+        return render_template('login.html', error=error)
     if request.method == 'GET':
-        searchword = request.args.get('key', '')
+        return render_template('login.html')
 
-    return render_template('login.html', error=error)
+
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -76,8 +77,8 @@ def upload_file():
         f.save('/var/www/uploads/' + secure_filename(f.filename))
 
 
-@app.route('/login2')
-def login2():
+@app.route('/regist')
+def regist():
     abort(401)
     # this_is_never_executed()
 
