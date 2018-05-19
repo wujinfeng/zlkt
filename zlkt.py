@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, make_response, render_template, redirect, abort
 from werkzeug.utils import secure_filename
+
 import config
 
 app = Flask(__name__)
@@ -8,13 +9,7 @@ app.config.from_object(config)
 
 @app.route('/')
 def index():
-    username = request.cookies.get('username')
-    print(username)
-    print(url_for('me'))
-    print(url_for('show_user_profile', username='wu'))
-    resp = make_response(render_template('hello.html', name='index'))
-    resp.set_cookie('username', 'the username')
-    return resp
+    return render_template('index.html')
 
 
 @app.route('/me', methods=['GET', 'POST'])
@@ -96,3 +91,12 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(port=3000)
+
+
+#     username = request.cookies.get('username')
+#     print(username)
+#     print(url_for('me'))
+#     print(url_for('show_user_profile', username='wu'))
+#     resp = make_response(render_template('hello.html', name='index'))
+#     resp.set_cookie('username', 'the username')
+#     return resp
