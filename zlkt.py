@@ -55,7 +55,7 @@ def about():
 
 @app.route('/login/', methods=['POST', 'GET'])
 def login():
-    error = None
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -77,10 +77,18 @@ def upload_file():
         f.save('/var/www/uploads/' + secure_filename(f.filename))
 
 
-@app.route('/regist')
+@app.route('/regist/', methods=['GET', 'POST'])
 def regist():
-    abort(401)
-    # this_is_never_executed()
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == 'u' and password == 'p':
+            error = ''
+        else:
+            error = 'Invalid username/password'
+        return render_template('regist.html', error=error)
+    if request.method == 'GET':
+        return render_template('regist.html')
 
 
 @app.errorhandler(404)
