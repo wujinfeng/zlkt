@@ -1,9 +1,9 @@
-from flask import Flask, url_for, request, make_response, render_template, redirect, abort
+from flask import Flask, url_for, request, make_response, render_template, redirect, session
 from werkzeug.utils import secure_filename
-from models import User
-from exts import db
 
 import config
+from exts import db
+from models import User
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -59,13 +59,16 @@ def about():
 @app.route('/login/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if username == 'u' and password == 'p':
-            error = ''
+        telephone = request.form.get('telephone')
+        password = request.form.get('password')
+        user = User.query.filter(User.telephone == telephone, User.password == password).first()
+        if user:
+            session['user_id'] = user.id
+            # 如果想在31天内都不需要登陆
+            session.permanent = True
+            return redirect(url_for('index'))
         else:
-            error = 'Invalid username/password'
-        return render_template('login.html', error=error)
+            return u'手机号或者密码错误，请确认后再登陆！'
     if request.method == 'GET':
         return render_template('login.html')
 
@@ -101,12 +104,28 @@ def regist():
     if request.method == 'GET':
         return render_template('regist.html')
 
+@app.route('/logout/')
+def logout():
+    # session.pop('user_id')
+    # del session['user_id]
+    session.clear()
+    return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def page_not_found(error):
     resp = make_response(render_template('page_not_found.html'), 500)
     resp.headers['X-Something'] = 'A value'
     return resp
+
+
+@app.context_processor
+def my_context_processor():
+    user_id = session.get('user_id')
+    if user_id:
+        user = User.query.filter(User.id == user_id).first()
+        if user:
+            return {'user': user}
+    return {}
 
 
 if __name__ == '__main__':

@@ -6,20 +6,18 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login_regist.css' ) }}">
 {% endblock %}
 
+
 {% block main %}
 
-
-    <form class="form-signin" method="post" action="">
-        <h3>登陆</h3>
-        <div class="form-group">
-            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="手机号">
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="密码">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">登陆</button>
-    </form>
-
-
+<form class="form-signin" method="post" action="">
+    <h3>登陆</h3>
+    <div class="form-group">
+        <input type="text" class="form-control" name="telephone" placeholder="手机号">
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" name="password" placeholder="密码">
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">登陆</button>
+</form>
 
 {% endblock %}
