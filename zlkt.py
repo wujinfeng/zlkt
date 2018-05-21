@@ -73,6 +73,14 @@ def login():
         return render_template('login.html')
 
 
+@app.route('/question/', methods=['POST', 'GET'])
+def question():
+    if request.method == 'GET':
+        return render_template('question.html')
+    else:
+        pass
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -104,12 +112,14 @@ def regist():
     if request.method == 'GET':
         return render_template('regist.html')
 
+
 @app.route('/logout/')
 def logout():
     # session.pop('user_id')
     # del session['user_id]
     session.clear()
     return redirect(url_for('login'))
+
 
 @app.errorhandler(404)
 def page_not_found(error):
