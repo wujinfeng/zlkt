@@ -4,10 +4,14 @@ from werkzeug.utils import secure_filename
 import config
 from exts import db
 from models import User
+from decorators import login_required
 
 app = Flask(__name__)
 app.config.from_object(config)
 db.init_app(app)
+
+
+
 
 
 @app.route('/')
@@ -74,6 +78,7 @@ def login():
 
 
 @app.route('/question/', methods=['POST', 'GET'])
+@login_required
 def question():
     if request.method == 'GET':
         return render_template('question.html')
