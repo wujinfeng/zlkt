@@ -13,7 +13,15 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    context = {
+        'questions': Question.query.order_by('-create_time').all()
+    }
+    return render_template('index.html', **context)
+
+@app.route('/detail/<question_id>')
+def detail(question_id):
+    question_mode = Question.query.filter(Question.id == question_id).first()
+    return render_template('detail.html', question=question_mode)
 
 
 @app.route('/me', methods=['GET', 'POST'])
